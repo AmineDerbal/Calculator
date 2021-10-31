@@ -1,0 +1,37 @@
+body{
+    margin: 0;
+    padding: 0;
+    height:500px
+}
+h1{
+    text-align: center;
+}
+.calculator-build{
+    margin: 0 auto;
+    height: auto;
+    width: 400px;
+    border: 2px solid black;
+  
+}
+.calculator-display {
+    width: 100%;
+    padding: 2px;
+   display: flex;
+   flex-direction: column;
+   flex-wrap: nowrap;
+}
+.calculator-display input {
+    background-color:red;
+    border: transparent;
+    text-align: right;
+}
+.calcualtor-body {
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(5,80px);
+    grid-template-rows: repeat(4,100px) ;   
+    
+}
+#equal{
+    grid-column: span 2;
+}
