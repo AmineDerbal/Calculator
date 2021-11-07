@@ -7,6 +7,7 @@ const number = document.querySelectorAll(".calcualtor-body .number");
 let operator = "";
 let val1 = "";
 let val2 = "";
+let secondOperator = "";
 
 displayBottom.value = "";
 displayTop.value = "";
@@ -29,6 +30,12 @@ btns.forEach((button) => {
         lastChar == "-" ||
         lastChar == "÷"
       ) {
+        displayBottom.value = e.target.id;
+      } else if (secondOperator != "") {
+        operator = secondOperator;
+        secondOperator = "";
+        val1 = displayBottom.value;
+        displayTop.value += operator;
         displayBottom.value = e.target.id;
       } else {
         displayBottom.value += e.target.id;
@@ -104,10 +111,9 @@ function operation(id) {
     displayBottom.value = "";
   } else if (val1 !== "" && displayBottom.value != "") {
     val2 = displayBottom.value;
-    displayTop.value += " " + val2 + " " + id;
+    displayTop.value += " " + val2 + " ";
     equal();
-    operator = id;
-    displayBottom.value += operator;
+    secondOperator = id;
   }
 }
 
@@ -115,8 +121,6 @@ function equal() {
   if (operator == "+") {
     res = addition(val1, val2);
     displayBottom.value = res;
-    val1 = res;
-    //displayTop.value = val1 + " " + operator + " " + val2;
     emptyValue();
 
     if (isInteger(res)) {
@@ -172,4 +176,5 @@ isInteger = (res) => (res % 1 == 0 ? true : false);
 emptyValue = () => {
   val2 = "";
   operator = "";
+  val1 = "";
 };
