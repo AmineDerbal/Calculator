@@ -7,7 +7,8 @@ const number = document.querySelectorAll(".calcualtor-body .number");
 let operator = "";
 let val1 = "";
 let val2 = "";
-let secondOperator = "";
+//let secondOperator = "";
+secondOperator = false;
 
 displayBottom.value = "";
 displayTop.value = "";
@@ -23,29 +24,22 @@ btns.forEach((button) => {
       let lastChar = displayBottom.value.charAt(displayBottom.value.length - 1);
 
       if (displayBottom.value == "0" && displayBottom.value.length == 1) {
-        displayBottom.value = e.target.id;
-      } else if (
+        displayBottom.value = id;
+      } /*else if (
         lastChar == "+" ||
         lastChar == "x" ||
         lastChar == "-" ||
         lastChar == "÷"
       ) {
         displayBottom.value = e.target.id;
-      } else if (secondOperator != "") {
-        //operator = secondOperator;
-        //secondOperator = "";
-        if (displayBottom.value != "0.") {
-          displayBottom.value = e.target.id;
-          val1 = displayBottom.value;
-        } else if (displayBottom.value == "0.")
-          displayBottom.value += e.target.id;
-        //displayTop.value += operator;
-        //displayBottom.value = e.target.id;
+      } */ else if (secondOperator) {
+        secondOperator = false;
+        displayTop.value = val1 + " " + operator;
+        displayBottom.value = id;
       } else {
         displayBottom.value += e.target.id;
       }
-      operator = secondOperator;
-      secondOperator = "";
+
       // case class is clear
     } else if (className == "clear") {
       displayBottom.value = "";
@@ -54,7 +48,7 @@ btns.forEach((button) => {
       val1 = "";
       val2 = "";
       operator = "";
-      secondOperator = "";
+      secondOperator = false;
     }
 
     // case class is delete
@@ -75,12 +69,12 @@ btns.forEach((button) => {
         if (displayBottom.value == "") {
           displayBottom.value = "0.";
           dot.disabled = true;
-        } else if (secondOperator != "") {
-          val1 = displayBottom.value;
+        } else if (secondOperator) {
+          // val1 = displayBottom.value;
           displayBottom.value = "0.";
-          operator = secondOperator;
-          secondOperator = "";
-          displayTop.value += " " + operator;
+          //operator = secondOperator;
+          secondOperator = false;
+          //displayTop.value += " " + operator;
           dot.disabled = true;
         } else {
           displayBottom.value += ".";
@@ -105,9 +99,12 @@ btns.forEach((button) => {
 
     //case =
     else if (className == "=") {
-      if (displayBottom.value != "" && operator != "" && val1 !== "") {
-        val2 = displayBottom.value;
+      if (displayBottom.value != "" && operator != "" && val1 != "") {
+        val2 = parseFloat(displayBottom.value);
+        displayTop.value = val1 + " " + operator + " " + val2;
         equal();
+        val1 = parseFloat(displayBottom.value);
+        displayBottom.value = "=" + " " + displayBottom.value;
       }
     }
   });
@@ -117,23 +114,28 @@ btns.forEach((button) => {
 function operation(id) {
   if (val1 == "" && displayBottom.value != "") {
     operator = id;
-    val1 = displayBottom.value;
-    displayTop.value = val1 + " " + operator;
+    secondOperator = true;
+    val1 = parseFloat(displayBottom.value);
+    displayTop.value += val1 + " " + operator;
     dot.disabled = false;
-
     displayBottom.value = "";
-  } else if (val1 !== "" && displayBottom.value != "") {
-    val2 = displayBottom.value;
+  } else if (val1 !== "" && displayBottom.value != "" && operator != "") {
+    val2 = parseFloat(displayBottom.value);
     displayTop.value += " " + val2;
     equal();
-    secondOperator = id;
+    secondOperator = true;
+    val1 = parseFloat(displayBottom.value);
+    operator = id;
+    displayTop.value = val1 + " " + operator;
     dot.disabled = false;
   } else if (operator != "") {
-    displayTop.value = displayTop.value.slice(0, -1);
     operator = id;
-    displayTop.value += operator;
-  } else if (secondOperator != "") {
-    secondOperator = id;
+
+    displayTop.value = displayTop.value.slice(0, -1);
+  } else if (val1 != "" && operator == "") {
+    operator = id;
+    secondOperator = true;
+    displayTop.value = val1 + " " + operator;
   }
 }
 
@@ -147,13 +149,11 @@ function equal() {
   } else if (operator == "-") {
     result = substraction(val1, val2);
     displayBottom.value = result;
-    displayTop.value += " " + val2;
     emptyValue();
     dot.disabled = isInteger(result);
   } else if (operator == "x") {
     result = multipication(val1, val2);
     displayBottom.value = result;
-    displayTop.value += " " + val2;
     emptyValue();
 
     dot.disabled = isInteger(result);
@@ -161,7 +161,6 @@ function equal() {
     if (val2 != "0") {
       result = division(val1, val2);
       displayBottom.value = result;
-      displayTop.value += " " + val2;
       emptyValue();
 
       dot.disabled = isInteger(result);
@@ -173,10 +172,10 @@ function equal() {
 }
 
 // operation functions
-addition = (val1, val2) => parseFloat(val1) + parseFloat(val2);
-substraction = (val1, val2) => parseFloat(val1) - parseFloat(val2);
-multipication = (val1, val2) => parseFloat(val1) * parseFloat(val2);
-division = (val1, val2) => parseFloat(val1) / parseFloat(val2);
+addition = (val1, val2) => val1 + val2;
+substraction = (val1, val2) => val1 - val2;
+multipication = (val1, val2) => val1 * val2;
+division = (val1, val2) => val1 / val2;
 isInteger = (res) => (res % 1 == 0 ? false : true);
 
 // function to initialise variables to null

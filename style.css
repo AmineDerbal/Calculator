@@ -1,7 +1,7 @@
 body{
     margin: 0;
     padding: 0;
-    height:500px;
+    
     background-color : grey;
 }
 h1{
@@ -92,12 +92,13 @@ font-size:30px;
 
 .footer{
     
-    height: 50px;
-    line-height: 50px;
-   
-    text-align: center;
+    padding:10px 0;
+    font-size: 20px;
+    position: fixed;
+    left: 0;
     bottom:0;
     width:100%;
+    gap: 10px;
     display:flex;
     flex-direction:row;
     align-items:center;
@@ -116,4 +117,10 @@ font-size:30px;
     font-size: 20px;
     
     
+}
+.rotate-icon{
+    transition: transform 0.3s ease-out;
+}
+.rotate-link:hover .rotate-icon{
+transform: rotate(360deg);
 }
