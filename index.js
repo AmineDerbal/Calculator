@@ -32,15 +32,20 @@ btns.forEach((button) => {
       ) {
         displayBottom.value = e.target.id;
       } else if (secondOperator != "") {
-        operator = secondOperator;
-        secondOperator = "";
-        val1 = displayBottom.value;
-        displayTop.value += operator;
-        displayBottom.value = e.target.id;
+        //operator = secondOperator;
+        //secondOperator = "";
+        if (displayBottom.value != "0.") {
+          displayBottom.value = e.target.id;
+          val1 = displayBottom.value;
+        } else if (displayBottom.value == "0.")
+          displayBottom.value += e.target.id;
+        //displayTop.value += operator;
+        //displayBottom.value = e.target.id;
       } else {
         displayBottom.value += e.target.id;
       }
-
+      operator = secondOperator;
+      secondOperator = "";
       // case class is clear
     } else if (className == "clear") {
       displayBottom.value = "";
@@ -49,6 +54,7 @@ btns.forEach((button) => {
       val1 = "";
       val2 = "";
       operator = "";
+      secondOperator = "";
     }
 
     // case class is delete
@@ -68,6 +74,13 @@ btns.forEach((button) => {
       if (dot.disabled == false) {
         if (displayBottom.value == "") {
           displayBottom.value = "0.";
+          dot.disabled = true;
+        } else if (secondOperator != "") {
+          val1 = displayBottom.value;
+          displayBottom.value = "0.";
+          operator = secondOperator;
+          secondOperator = "";
+          displayTop.value += " " + operator;
           dot.disabled = true;
         } else {
           displayBottom.value += ".";
@@ -111,68 +124,62 @@ function operation(id) {
     displayBottom.value = "";
   } else if (val1 !== "" && displayBottom.value != "") {
     val2 = displayBottom.value;
-    displayTop.value += " " + val2 + " ";
+    displayTop.value += " " + val2;
     equal();
+    secondOperator = id;
+    dot.disabled = false;
+  } else if (operator != "") {
+    displayTop.value = displayTop.value.slice(0, -1);
+    operator = id;
+    displayTop.value += operator;
+  } else if (secondOperator != "") {
     secondOperator = id;
   }
 }
 
+//
 function equal() {
   if (operator == "+") {
-    res = addition(val1, val2);
-    displayBottom.value = res;
+    result = addition(val1, val2);
+    displayBottom.value = result;
     emptyValue();
-
-    if (isInteger(res)) {
-      dot.disabled = false;
-    } else {
-      dot.disabled = true;
-    }
+    dot.disabled = isInteger(result);
   } else if (operator == "-") {
-    res = substraction(val1, val2);
-    displayBottom.value = res;
-    displayTop.value = val1 + " " + operator + " " + val2;
+    result = substraction(val1, val2);
+    displayBottom.value = result;
+    displayTop.value += " " + val2;
     emptyValue();
-    if (isInteger(res)) {
-      dot.disabled = false;
-    } else {
-      dot.disabled = true;
-    }
+    dot.disabled = isInteger(result);
   } else if (operator == "x") {
-    res = multipication(val1, val2);
-    displayBottom.value = res;
-    displayTop.value = val1 + " " + operator + " " + val2;
+    result = multipication(val1, val2);
+    displayBottom.value = result;
+    displayTop.value += " " + val2;
     emptyValue();
 
-    if (isInteger(res)) {
-      dot.disabled = false;
-    } else {
-      dot.disabled = true;
-    }
+    dot.disabled = isInteger(result);
   } else if (operator == "÷") {
     if (val2 != "0") {
-      res = division(val1, val2);
-      displayBottom.value = res;
-      displayTop.value = val1 + " " + operator + " " + val2;
+      result = division(val1, val2);
+      displayBottom.value = result;
+      displayTop.value += " " + val2;
       emptyValue();
 
-      if (isInteger(res)) {
-        dot.disabled = false;
-      } else {
-        dot.disabled = true;
-      }
+      dot.disabled = isInteger(result);
     } else {
-      alert("impossibe to divise a number by 0");
-      val2 = "";
+      alert("ERROR : impossibe to divise a number by 0");
+      clear();
     }
   }
 }
 
+// operation functions
 addition = (val1, val2) => parseFloat(val1) + parseFloat(val2);
 substraction = (val1, val2) => parseFloat(val1) - parseFloat(val2);
 multipication = (val1, val2) => parseFloat(val1) * parseFloat(val2);
 division = (val1, val2) => parseFloat(val1) / parseFloat(val2);
-isInteger = (res) => (res % 1 == 0 ? true : false);
+isInteger = (res) => (res % 1 == 0 ? false : true);
+
+// function to initialise variables to null
 emptyValue = () => {
   val2 = "";
   operator = "";
